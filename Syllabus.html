@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Add Syllabus</title>
-	<link rel="stylesheet" type="text/css" href="index.css">
+	<link rel="stylesheet" type="text/css" href="Syllabus.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -58,11 +58,7 @@
 	    					</div>
 	    				</div>`;
 		    $('#syllabus').append(data);
-		    var syllabusNumber = 1;
-				$('.index').each(function(){
-				   	$(this).text(syllabusNumber);
-				    syllabusNumber++;
-				});
+		    setCardIndex();
 		    counter++;
 		    $("#addSyllabusBtn").prop('disabled', false);
 	    }
@@ -76,11 +72,7 @@
 	    		let index = parseInt(myCounter) - 1;
 	    		syllabus.splice(index, 1);
 		    	$(this).parent().parent().remove();
-		    	var syllabusNumber = 1;
-				$('.index').each(function(){
-				   	$(this).text(syllabusNumber);
-				    syllabusNumber++;
-				});
+		    	setCardIndex();
 		    	counter--;
 		    	console.log(syllabus);
 	    	}
@@ -97,6 +89,15 @@
             $("#objective").val(syllabus[index]["objective"]);
             console.log(counter);
 	    })
+
+	    function setCardIndex()
+	    {
+	    	var syllabusNumber = 1;
+			$('.index').each(function(){
+			   	$(this).text(syllabusNumber);
+			    syllabusNumber++;
+			});
+	    }
 
 	</script>
 </head>
