@@ -1,0 +1,102 @@
+<!-- With Rerendering -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Add Syllabus</title>
+	<link rel="stylesheet" type="text/css" href="Syllabus.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		var counter = 1;
+		var syllabusForm;
+		function addSyllabus()
+		{
+			syllabusForm = `<div class="sectionSyllabus">
+								<label id="syllabusIndex" class="p-3 mb-2 bg-primary text-white">Syllabus ${counter}</label><br>
+								<input type="text" name="syllabusTitle" id="syllabusTitle" placeholder="Syllabus-Title"><br><br>
+								<input name="description" id="description" placeholder="Syllabus-Description"></input><br><br>
+								<input type="text" name="objective" id="objective" placeholder="Learning Objectives"><br><br>
+								<button id="save" class="btn btn-primary" title="Save"> Save</button>
+								<button id="cancel" class="btn btn-secondary" title="Cancel">Cancel</button>
+								<br><br>
+							</div>`;
+			$("#addSyllabusBtn").prop('disabled', true);
+			$("#syllabus").append(syllabusForm);
+		}
+
+		$(document).on('click', '#cancel', function() {
+		    $(this).parent().remove();
+		    $("#addSyllabusBtn").prop('disabled', false);
+	    });
+
+    	var syllabus = [];
+	    $(document).on('click', '#save', function(){
+		    var sectionSyllabus = {};
+			$('.sectionSyllabus input').each(function(){
+				var id = $(this).attr("id");
+				var value = $(this).val();
+			    if (value != ''){
+			        sectionSyllabus[id] = value;
+			    }
+			})
+	        syllabus.push(sectionSyllabus);
+			$(this).parent().remove();
+	        saveAsCard();
+	    })
+
+	    function saveAsCard()
+	    {
+	    	$(".card").remove();
+	    	for(let counter = 0; counter < syllabus.length; counter++)
+	    	{
+	    		let sectionSyllabus = syllabus[counter];
+		    	$('#syllabus').append(`<div class="card">
+		    					<div class="index rounded-circle">${counter + 1}</div>
+		    					<div class="minimizedcard">
+		    						<label><b>${sectionSyllabus["syllabusTitle"]}</b></label><br>
+		    						<label>${ sectionSyllabus["description"]}</label>
+		    						<a href="#" id="delete">Delete</a>
+		    						<a href="#" id="edit">Edit</a>
+		    					</div>
+		    				</div>`);
+	    	}
+		    counter++;
+		    $("#addSyllabusBtn").prop('disabled', false);
+	    }
+
+	    $(document).on('click', '#delete', function()
+	    {
+	    	let ok = confirm("Are You Sure?");
+	    	if(ok)
+	    	{
+	    		let myCounter = $(this).parent().parent().children("div:first-child").text();
+	    		let index = parseInt(myCounter) - 1;
+	    		syllabus.splice(index, 1);
+		    	saveAsCard();
+		    	counter--;
+		    	console.log(syllabus);
+	    	}
+	    })
+
+	    $(document).on('click', '#edit', function()
+	    {
+	    	let myCounter = $(this).parent().parent().children("div:first-child").text();
+	    	let index = parseInt(myCounter) - 1;
+	    	console.log(index);
+	    	let counter = index;
+	    	$(this).parent().parent().replaceWith(syllabusForm);
+            $("#syllabusTitle").val(syllabus[index]["syllabusTitle"]);
+            $("#description").val(syllabus[index]["description"]);
+            $("#objective").val(syllabus[index]["objective"]);
+            console.log(counter);
+	    })
+	</script>
+</head>
+<body id="body">
+	<input type="button" name="addSyllabusBtn" id="addSyllabusBtn" title="Add Syllabus" value="Add Syllabus" onclick="addSyllabus()" class="btn btn-primary"><br>
+	<div id="syllabus"></div>
+</body>
+</html>
