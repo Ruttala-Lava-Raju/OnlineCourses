@@ -10,18 +10,23 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
 		var counter = 1;
-		var syllabusForm;
+		function createForm()
+		{
+			let syllabusForm = `<div class="sectionSyllabus">
+						<label id="syllabusIndex" class="p-3 mb-2 bg-primary text-white">Syllabus ${counter}</label><br>
+						<input type="text" name="syllabusTitle" id="syllabusTitle" placeholder="Syllabus-Title"><br><br>
+						<input name="description" id="description" placeholder="Syllabus-Description"></input><br><br>
+						<input type="text" name="objective" id="objective" placeholder="Learning Objectives"><br><br>
+						<button id="save" class="btn btn-primary" title="Save"> Save</button>
+						<button id="cancel" class="btn btn-secondary" title="Cancel">Cancel</button>
+						<br><br>
+					</div>`;
+			return(syllabusForm);
+		}
+
 		function addSyllabus()
 		{
-			syllabusForm = `<div class="sectionSyllabus">
-								<label id="syllabusIndex" class="p-3 mb-2 bg-primary text-white">Syllabus ${counter}</label><br>
-								<input type="text" name="syllabusTitle" id="syllabusTitle" placeholder="Syllabus-Title"><br><br>
-								<input name="description" id="description" placeholder="Syllabus-Description"></input><br><br>
-								<input type="text" name="objective" id="objective" placeholder="Learning Objectives"><br><br>
-								<button id="save" class="btn btn-primary" title="Save"> Save</button>
-								<button id="cancel" class="btn btn-secondary" title="Cancel">Cancel</button>
-								<br><br>
-							</div>`;
+			let syllabusForm = createForm();
 			$("#addSyllabusBtn").prop('disabled', true);
 			$("#syllabus").append(syllabusForm);
 		}
@@ -46,9 +51,9 @@
 	        saveAsCard(sectionSyllabus);
 	    })
 
-	    function saveAsCard(sectionSyllabus)
+	    function createCard(sectionSyllabus)
 	    {
-	    	var data = `<div class="card">
+	    	let syllabusCard = `<div class="card">
 	    					<div class="index rounded-circle">${counter}</div>
 	    					<div class="minimizedcard">
 	    						<label><b>${sectionSyllabus["syllabusTitle"]}</b></label><br>

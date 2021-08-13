@@ -9,7 +9,7 @@
 	margin-top: 50px;
 	border: 0px;
 }
-#syllabusTitle
+.syllabusTitle
 {
 	width: 90%;
 	height: 30px;
@@ -20,7 +20,7 @@
 	border-radius: 5px;
 }
 
-#description
+.description
 {
 	width: 90%;
 	height: 60px;
@@ -29,19 +29,19 @@
 	border: 1px solid whitesmoke;
 	border-radius: 5px;
 }
-#description:focus{
+.description:focus{
 	background: white;
 	outline-color: lightblue;
 }
-#syllabusTitle:focus{
+.syllabusTitle:focus{
 	background: white;
 	outline-color: lightblue;
 }
-#objective:focus{
+.objective:focus{
 	background: white;
 }
 
-#objective
+.objective
 {
 	width: 90%;
 	height: 30px;
@@ -108,4 +108,8 @@ a{
 	margin-left: 45px;
 	margin-top: -46px;
 
+}
+
+.p-3{
+	margin-left: 53px;
 }
