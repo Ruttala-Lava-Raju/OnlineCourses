@@ -40,6 +40,7 @@
 			renderCards();
 		}
 
+<<<<<<< HEAD
 
 	    function save(index)
 	    {
@@ -83,6 +84,40 @@
 	    		$("#syllabus").append(syllabusContent);
 	    		index++;
 	    	}
+=======
+    	var syllabus = [];
+	    $(document).on('click', '#save', function(){
+		    var sectionSyllabus = {};
+			$('.sectionSyllabus input').each(function(){
+				var id = $(this).attr("id");
+				var value = $(this).val();
+			    if (value != ''){
+			        sectionSyllabus[id] = value;
+			    }
+			})
+	        syllabus.push(sectionSyllabus);
+			$(this).parent().remove();
+	        saveAsCard();
+	    })
+
+	    function saveAsCard()
+	    {
+	    	$(".card").remove();
+	    	for(let counter = 0; counter < syllabus.length; counter++)
+	    	{
+	    		let sectionSyllabus = syllabus[counter];
+		    	$('#syllabus').append(`<div class="card">
+		    					<div class="index rounded-circle">${counter + 1}</div>
+		    					<div class="minimizedcard">
+		    						<label><b>${sectionSyllabus["syllabusTitle"]}</b></label><br>
+		    						<label>${ sectionSyllabus["description"]}</label>
+		    						<a href="#" id="delete">Delete</a>
+		    						<a href="#" id="edit">Edit</a>
+		    					</div>
+		    				</div>`);
+	    	}
+		    counter++;
+>>>>>>> 09264bc757f9026a42f6661c16b7faeb39a016bc
 		    $("#addSyllabusBtn").prop('disabled', false);
 	    }
 
@@ -92,6 +127,7 @@
 	    	if(ok)
 	    	{
 	    		syllabus.splice(index, 1);
+<<<<<<< HEAD
 	    		renderCards();
 	    	}
 	    	console.log(syllabus);
@@ -103,6 +139,26 @@
 	    	renderCards();
 	    }
 
+=======
+		    	saveAsCard();
+		    	counter--;
+		    	console.log(syllabus);
+	    	}
+	    })
+
+	    $(document).on('click', '#edit', function()
+	    {
+	    	let myCounter = $(this).parent().parent().children("div:first-child").text();
+	    	let index = parseInt(myCounter) - 1;
+	    	console.log(index);
+	    	let counter = index;
+	    	$(this).parent().parent().replaceWith(syllabusForm);
+            $("#syllabusTitle").val(syllabus[index]["syllabusTitle"]);
+            $("#description").val(syllabus[index]["description"]);
+            $("#objective").val(syllabus[index]["objective"]);
+            console.log(counter);
+	    })
+>>>>>>> 09264bc757f9026a42f6661c16b7faeb39a016bc
 	</script>
 </head>
 <body id="body">
