@@ -1,3 +1,4 @@
+<!-- With Rerendering -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,99 +10,97 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
-		var counter = 1;
-		function createForm()
-		{
-			let syllabusForm = `<div class="sectionSyllabus">
-						<label id="syllabusIndex" class="p-3 mb-2 bg-primary text-white">Syllabus ${counter}</label><br>
-						<input type="text" name="syllabusTitle" id="syllabusTitle" placeholder="Syllabus-Title"><br><br>
-						<input name="description" id="description" placeholder="Syllabus-Description"></input><br><br>
-						<input type="text" name="objective" id="objective" placeholder="Learning Objectives"><br><br>
-						<button id="save" class="btn btn-primary" title="Save"> Save</button>
-						<button id="cancel" class="btn btn-secondary" title="Cancel">Cancel</button>
-						<br><br>
-					</div>`;
-			return(syllabusForm);
-		}
+    	var syllabus = [];
+    	var emptySyllabusForm = {syllabusTitle: "", description: "", objective: "", editStatus:1};
 
 		function addSyllabus()
 		{
-			let syllabusForm = createForm();
+			syllabus.push(emptySyllabusForm);
+			renderCards();
 			$("#addSyllabusBtn").prop('disabled', true);
-			$("#syllabus").append(syllabusForm);
 		}
 
-		$(document).on('click', '#cancel', function() {
-		    $(this).parent().remove();
-		    $("#addSyllabusBtn").prop('disabled', false);
-	    });
+		function createForm(index, sectionSyllabus)
+		{
+			let syllabusForm =  `<div class="sectionSyllabus" id="form">
+									<label id="syllabusNumber" class="p-3 bg-primary text-white">Syllabus ${index + 1}</label><br>
+									<input type="text" name="syllabusTitle" id="syllabusTitle${index}" class="syllabusTitle" placeholder="syllabusTitle" value="${sectionSyllabus["syllabusTitle"]}"><br><br>
+									<input type="text" name="description" id="description${index}" class="description" placeholder="Syllabus Description" value="${sectionSyllabus["description"]}"><br><br>
+									<input type="text" name="objective" id="objective${index}" class="objective" placeholder="Learning Objectives" value="${sectionSyllabus["objective"]}"><br><br>
+									<button id="save" class="btn btn-primary" title="Save" onclick="save(${index})"> Save</button>
+									<button id="cancel" class="btn btn-primary" title="Cancel" onclick="cancel(${index})">Cancel</button>
+									<br><br>
+								</div>`;
+			return(syllabusForm);
+		}
 
-    	var syllabus = [];
-	    $(document).on('click', '#save', function(){
-		    var sectionSyllabus = {};
-			$('.sectionSyllabus input').each(function(){
-				var id = $(this).attr("id");
-				var value = $(this).val();
-			    if (value != ''){
-			        sectionSyllabus[id] = value;
-			    }
-			})
-	        syllabus.push(sectionSyllabus);
-			$(this).parent().remove();
-	        saveAsCard(sectionSyllabus);
-	    })
+		function cancel(index)
+		{
+			syllabus.splice(index, 1);
+			renderCards();
+		}
 
-	    function createCard(sectionSyllabus)
+
+	    function save(index)
+	    {
+	    	let sectionSyllabusData = {syllabusTitle: $("#syllabusTitle" + index + "").val(), description: $("#description" + index + "").val(), objective: $("#objective" + index + "").val(), editStatus:0};
+	    	syllabus[index] = sectionSyllabusData;
+	    	renderCards();
+	    	console.log(syllabus);
+
+	    }
+
+
+
+	    function createCard(index, sectionSyllabus)
 	    {
 	    	let syllabusCard = `<div class="card">
-	    					<div class="index rounded-circle">${counter}</div>
-	    					<div class="minimizedcard">
-	    						<label><b>${sectionSyllabus["syllabusTitle"]}</b></label><br>
-	    						<label>${ sectionSyllabus["description"]}</label>
-	    						<a href="#" id="delete">Delete</a>
-	    						<a href="#" id="edit">Edit</a>
-	    					</div>
-	    				</div>`;
-		    $('#syllabus').append(data);
-		    setCardIndex();
-		    counter++;
+		    					<div class="index rounded-circle">${index + 1}</div>
+		    					<div class="minimizedcard">
+		    						<label><b>${sectionSyllabus["syllabusTitle"]}</b></label><br>
+		    						<label>${ sectionSyllabus["description"]}</label>
+		    						<a href="#" id="delete" onclick="deleteSyllabusCard(${index})">Delete</a>
+		    						<a href="#" id="edit" onclick="editSyllabusCard(${index})">Edit</a>
+		    					</div>
+		    				</div>`;
+		    return(syllabusCard);
+	    }
+
+	    function renderCards()
+	    {
+	    	let index = 0;
+	    	$("#syllabus").html("");
+	    	for(var sectionSyllabus of syllabus)
+	    	{
+	    		if(sectionSyllabus["editStatus"] == 0)
+	    		{
+	    			var syllabusContent = createCard(index, sectionSyllabus);
+	    		}
+	    		else
+	    		{
+	    			var syllabusContent = createForm(index, sectionSyllabus);
+	    		}
+	    		$("#syllabus").append(syllabusContent);
+	    		index++;
+	    	}
 		    $("#addSyllabusBtn").prop('disabled', false);
 	    }
 
-	    $(document).on('click', '#delete', function()
+	    function deleteSyllabusCard(index)
 	    {
 	    	let ok = confirm("Are You Sure?");
 	    	if(ok)
 	    	{
-	    		let myCounter = $(this).parent().parent().children("div:first-child").text();
-	    		let index = parseInt(myCounter) - 1;
 	    		syllabus.splice(index, 1);
-		    	$(this).parent().parent().remove();
-		    	setCardIndex();
-		    	counter--;
-		    	console.log(syllabus);
+	    		renderCards();
 	    	}
-	    })
+	    	console.log(syllabus);
+	    }
 
-	    $(document).on('click', '#edit', function()
+	    function editSyllabusCard(index)
 	    {
-	    	let myCounter = $(this).parent().parent().children("div:first-child").text();
-	    	let index = parseInt(myCounter) - 1;
-	    	console.log(index);
-	    	$(this).parent().parent().replaceWith(syllabusForm);
-            $("#syllabusTitle").val(syllabus[index]["syllabusTitle"]);
-            $("#description").val(syllabus[index]["description"]);
-            $("#objective").val(syllabus[index]["objective"]);
-            console.log(counter);
-	    })
-
-	    function setCardIndex()
-	    {
-	    	var syllabusNumber = 1;
-			$('.index').each(function(){
-			   	$(this).text(syllabusNumber);
-			    syllabusNumber++;
-			});
+	    	syllabus[index]["editStatus"] = 1;
+	    	renderCards();
 	    }
 
 	</script>
