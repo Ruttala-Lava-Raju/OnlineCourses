@@ -11,7 +11,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
     	var syllabus = [];
-    	var emptySyllabusForm = {syllabusTitle: "", description: "", objective: "", editStatus:1};
+    	var emptySyllabusForm = {syllabusTitle: "", description: "", objective: "", editMode: true};
 
 		function addSyllabus()
 		{
@@ -36,17 +36,26 @@
 
 		function cancel(index)
 		{
-			syllabus.splice(index, 1);
+			let sectionSyllabusData = syllabus[index];
+			if((sectionSyllabusData.syllabusTitle == "") && (sectionSyllabusData.description == "") && (sectionSyllabusData.objective == ""))
+			{
+				syllabus.splice(index, 1);
+			}
+			else
+			{
+				syllabus[index]["editMode"] = false;
+			}
 			renderCards();
+			$("#addSyllabusBtn").prop('disabled', false);
 		}
 
-<<<<<<< HEAD
 
 	    function save(index)
 	    {
-	    	let sectionSyllabusData = {syllabusTitle: $("#syllabusTitle" + index + "").val(), description: $("#description" + index + "").val(), objective: $("#objective" + index + "").val(), editStatus:0};
+	    	let sectionSyllabusData = {syllabusTitle: $("#syllabusTitle" + index + "").val(), description: $("#description" + index + "").val(), objective: $("#objective" + index + "").val(), editMode: false};
 	    	syllabus[index] = sectionSyllabusData;
 	    	renderCards();
+			$("#addSyllabusBtn").prop('disabled', false);
 	    	console.log(syllabus);
 
 	    }
@@ -73,7 +82,7 @@
 	    	$("#syllabus").html("");
 	    	for(var sectionSyllabus of syllabus)
 	    	{
-	    		if(sectionSyllabus["editStatus"] == 0)
+	    		if(sectionSyllabus["editMode"] == false)
 	    		{
 	    			var syllabusContent = createCard(index, sectionSyllabus);
 	    		}
@@ -84,41 +93,6 @@
 	    		$("#syllabus").append(syllabusContent);
 	    		index++;
 	    	}
-=======
-    	var syllabus = [];
-	    $(document).on('click', '#save', function(){
-		    var sectionSyllabus = {};
-			$('.sectionSyllabus input').each(function(){
-				var id = $(this).attr("id");
-				var value = $(this).val();
-			    if (value != ''){
-			        sectionSyllabus[id] = value;
-			    }
-			})
-	        syllabus.push(sectionSyllabus);
-			$(this).parent().remove();
-	        saveAsCard();
-	    })
-
-	    function saveAsCard()
-	    {
-	    	$(".card").remove();
-	    	for(let counter = 0; counter < syllabus.length; counter++)
-	    	{
-	    		let sectionSyllabus = syllabus[counter];
-		    	$('#syllabus').append(`<div class="card">
-		    					<div class="index rounded-circle">${counter + 1}</div>
-		    					<div class="minimizedcard">
-		    						<label><b>${sectionSyllabus["syllabusTitle"]}</b></label><br>
-		    						<label>${ sectionSyllabus["description"]}</label>
-		    						<a href="#" id="delete">Delete</a>
-		    						<a href="#" id="edit">Edit</a>
-		    					</div>
-		    				</div>`);
-	    	}
-		    counter++;
->>>>>>> 09264bc757f9026a42f6661c16b7faeb39a016bc
-		    $("#addSyllabusBtn").prop('disabled', false);
 	    }
 
 	    function deleteSyllabusCard(index)
@@ -127,7 +101,6 @@
 	    	if(ok)
 	    	{
 	    		syllabus.splice(index, 1);
-<<<<<<< HEAD
 	    		renderCards();
 	    	}
 	    	console.log(syllabus);
@@ -135,30 +108,10 @@
 
 	    function editSyllabusCard(index)
 	    {
-	    	syllabus[index]["editStatus"] = 1;
+	    	syllabus[index]["editMode"] = true;
+	    	console.log(syllabus[index]["editMode"]);
 	    	renderCards();
 	    }
-
-=======
-		    	saveAsCard();
-		    	counter--;
-		    	console.log(syllabus);
-	    	}
-	    })
-
-	    $(document).on('click', '#edit', function()
-	    {
-	    	let myCounter = $(this).parent().parent().children("div:first-child").text();
-	    	let index = parseInt(myCounter) - 1;
-	    	console.log(index);
-	    	let counter = index;
-	    	$(this).parent().parent().replaceWith(syllabusForm);
-            $("#syllabusTitle").val(syllabus[index]["syllabusTitle"]);
-            $("#description").val(syllabus[index]["description"]);
-            $("#objective").val(syllabus[index]["objective"]);
-            console.log(counter);
-	    })
->>>>>>> 09264bc757f9026a42f6661c16b7faeb39a016bc
 	</script>
 </head>
 <body id="body">
