@@ -22,7 +22,7 @@
 
 		function createForm(index, sectionSyllabus)
 		{
-			let syllabusForm =  `<div class="sectionSyllabus" id="form">
+			let syllabusForm =  `<div class="sectionSyllabus>
 									<label id="syllabusNumber" class="p-3 bg-primary text-white">Syllabus ${index + 1}</label><br>
 									<input type="text" name="syllabusTitle" id="syllabusTitle${index}" class="syllabusTitle" placeholder="syllabusTitle" value="${sectionSyllabus["syllabusTitle"]}"><br><br>
 									<input type="text" name="description" id="description${index}" class="description" placeholder="Syllabus Description" value="${sectionSyllabus["description"]}"><br><br>
@@ -36,7 +36,7 @@
 
 		function cancel(index)
 		{
-			let sectionSyllabusData = syllabus[index];
+			let sectionSyllabusData = syllabus[index0];
 			if((sectionSyllabusData.syllabusTitle == "") && (sectionSyllabusData.description == "") && (sectionSyllabusData.objective == ""))
 			{
 				syllabus.splice(index, 1);
@@ -63,13 +63,13 @@
 	    {
 	    	let syllabusCard = `<div class="card">
 		    					<div class="index rounded-circle">${index + 1}</div>
-		    					<div class="minimizedcard">
-		    						<label><b>${sectionSyllabus["syllabusTitle"]}</b></label><br>
-		    						<label>${ sectionSyllabus["description"]}</label>
-		    						<a href="#" id="delete" onclick="deleteSyllabusCard(${index})">Delete</a>
-		    						<a href="#" id="edit" onclick="editSyllabusCard(${index})">Edit</a>
-		    					</div>
-		    				</div>`;
+			    					<div class="minimizedcard">
+			    						<label><b>${sectionSyllabus["syllabusTitle"]}</b></label><br>
+			    						<label>${ sectionSyllabus["description"]}</label>
+			    						<a href="#" id="delete" onclick="deleteSyllabusCard(${index})">Delete</a>
+			    						<a href="#" id="edit" onclick="editSyllabusCard(${index})">Edit</a>
+			    					</div>
+			    				</div>`;
 		    return(syllabusCard);
 	    }
 
