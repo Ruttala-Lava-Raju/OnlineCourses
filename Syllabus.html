@@ -1,4 +1,3 @@
-<!-- With Rerendering -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +10,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
     	var syllabus = [];
-    	var emptySyllabusForm = {syllabusTitle: "", description: "", objective: "", editMode: true};
+    	var emptySyllabusForm = {syllabusTitle: "", description: "", objective: "", editMode: true, isTitleValid: true, isDescriptionValid: true, isObjectiveValid: true};
 
 		function addSyllabus()
 		{
@@ -22,12 +21,40 @@
 
 		function createForm(index, sectionSyllabus)
 		{
-			let syllabusForm =  `<div class="sectionSyllabus>
-									<label id="syllabusNumber" class="p-3 bg-primary text-white">Syllabus ${index + 1}</label><br>
-									<input type="text" name="syllabusTitle" id="syllabusTitle${index}" class="syllabusTitle" placeholder="syllabusTitle" value="${sectionSyllabus["syllabusTitle"]}"><br><br>
-									<input type="text" name="description" id="description${index}" class="description" placeholder="Syllabus Description" value="${sectionSyllabus["description"]}"><br><br>
-									<input type="text" name="objective" id="objective${index}" class="objective" placeholder="Learning Objectives" value="${sectionSyllabus["objective"]}"><br><br>
-									<button id="save" class="btn btn-primary" title="Save" onclick="save(${index})"> Save</button>
+			let syllabusForm =  `<div class="sectionSyllabus">
+									<label class="p-3 bg-primary text-white">Syllabus ${index + 1}</label><br>
+									<input type="text" name="syllabusTitle" id="syllabusTitle${index}" class="syllabusTitle" placeholder="syllabusTitle" value="${sectionSyllabus.syllabusTitle}"><br>`;
+										if(sectionSyllabus.isTitleValid == false)
+										{
+											syllabusForm = syllabusForm + `<p>Please enter syllabus title.</p>`;
+										}
+										else
+										{
+											syllabusForm = syllabusForm + "<br>";
+										}
+
+									syllabusForm = syllabusForm + `<input type="text" name="description" id="description${index}" class="description" placeholder="Syllabus Description" value="${sectionSyllabus.description}"><br>`;
+
+									if (sectionSyllabus.isDescriptionValid == false) 
+										{
+											syllabusForm = syllabusForm + `<p>Please enter syllabus description.</p>`;
+										} 
+										else 
+										{
+											syllabusForm = syllabusForm + `<br>`;
+										}
+
+									syllabusForm = syllabusForm + `<input type="text" name="objective" id="objective${index}" class="objective" placeholder="Learning Objectives" value="${sectionSyllabus.objective}"><br>`;
+
+									if (sectionSyllabus.isObjectiveValid == false) 
+										{
+											syllabusForm = syllabusForm + `<p>Please enter syllabus objective.</p>`;
+										} 
+										else 
+										{
+											syllabusForm = syllabusForm + `<br>`;
+										}
+									syllabusForm = syllabusForm + `<button id="save" class="btn btn-primary" title="Save" onclick="save(${index})"> Save</button>
 									<button id="cancel" class="btn btn-primary" title="Cancel" onclick="cancel(${index})">Cancel</button>
 									<br><br>
 								</div>`;
@@ -43,21 +70,41 @@
 			}
 			else
 			{
-				syllabus[index]["editMode"] = false;
+				sectionSyllabusData.editMode = false;
 			}
 			renderCards();
 			$("#addSyllabusBtn").prop('disabled', false);
 		}
 
-	    function save(index)
-	    {
-	    	let sectionSyllabusData = {syllabusTitle: $("#syllabusTitle" + index + "").val(), description: $("#description" + index + "").val(), objective: $("#objective" + index + "").val(), editMode: false};
+		function save(index)
+		{
+	    	var sectionSyllabusData = {syllabusTitle: $("#syllabusTitle" + index + "").val(), description: $("#description" + index + "").val(), objective: $("#objective" + index + "").val(), editMode: true, isTitleValid: true, isDescriptionValid: true, isObjectiveValid: true};
+	    	if (sectionSyllabusData.syllabusTitle == "" || sectionSyllabusData.description == "" || sectionSyllabusData.objective == "") 
+	    	{
+	    		if (sectionSyllabusData.syllabusTitle == "") 
+    			{
+    				sectionSyllabusData.isTitleValid = false;
+    			}
+
+    			if (sectionSyllabusData.description == "") 
+    			{
+    				sectionSyllabusData.isDescriptionValid = false;
+    			}
+
+    			if(sectionSyllabusData.objective == "")
+    			{
+    				sectionSyllabusData.isObjectiveValid = false;
+    			}
+		    }
+		    else
+		    {
+		    	sectionSyllabusData.editMode = false;
+		    }
 	    	syllabus[index] = sectionSyllabusData;
 	    	renderCards();
 			$("#addSyllabusBtn").prop('disabled', false);
 	    	console.log(syllabus);
-
-	    }
+		}
 
 	    function createCard(index, sectionSyllabus)
 	    {
@@ -77,7 +124,7 @@
 	    {
 	    	let index = 0;
 	    	$("#syllabus").html("");
-	    	for(var sectionSyllabus of syllabus)
+	    	for(const sectionSyllabus of syllabus)
 	    	{
 	    		if(sectionSyllabus["editMode"] == false)
 	    		{
