@@ -1,7 +1,9 @@
-.sectionSyllabus{
+.sectionSyllabus
+{
 	width: 100%;
 	margin-top: 100px;
 }
+
 #addSyllabusBtn
 {
 	float: right;
@@ -9,6 +11,7 @@
 	margin-top: 50px;
 	border: 0px;
 }
+
 .syllabusTitle
 {
 	width: 90%;
@@ -29,15 +32,21 @@
 	border: 1px solid whitesmoke;
 	border-radius: 5px;
 }
-.description:focus{
+
+.description:focus
+{
 	background: white;
 	outline-color: lightblue;
 }
-.syllabusTitle:focus{
+
+.syllabusTitle:focus
+{
 	background: white;
 	outline-color: lightblue;
 }
-.objective:focus{
+
+.objective:focus
+{
 	background: white;
 }
 
@@ -53,6 +62,7 @@
 	outline:0px;
 	border-radius: 5px;
 }
+
 #cancel
 {
 	float: right;
@@ -66,9 +76,7 @@
 	margin-right: 100px;
 	border: 0px;
 }
-#syllabusIndex{
-	margin-left: 58px;
-}
+
 .card{
 	padding-left: 14px;
 	width: 90%;
@@ -82,10 +90,13 @@
 
 }
 
-#body{
+#body
+{
 	background: lightblue;
 }
-.index{
+
+.index
+{
 	width: 40px;
     height: 40px;
     background-color: blueviolet;
@@ -94,22 +105,27 @@
     text-align:center;
     float: left;
 }
-a{
+
+a
+{
 	float: right;
 }
 
-#delete{
+#delete
+{
 	padding-right: 32px;
 	padding-left: 18px;
 }
 
-.minimizedcard{
+.minimizedcard
+{
 	float: right;
 	margin-left: 45px;
 	margin-top: -46px;
-
 }
 
-.p-3{
+.p-3
+{
 	margin-left: 53px;
 }
+
