@@ -128,4 +128,8 @@ a
 {
 	margin-left: 53px;
 }
-
+.errorMsg
+{
+	margin-left: 50px;
+	color: red;
+}

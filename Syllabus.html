@@ -23,40 +23,40 @@
 			let syllabusForm =  `<div class="sectionSyllabus">
 									<label class="p-3 bg-primary text-white">Syllabus ${index + 1}</label><br>
 									<input type="text" name="syllabusTitle" id="syllabusTitle${index}" class="syllabusTitle" placeholder="syllabusTitle" value="${sectionSyllabus.syllabusTitle}"><br>`;
-										if(sectionSyllabus.isTitleValid == false)
-										{
-											syllabusForm = syllabusForm + `<p>Please enter syllabus title.</p>`;
-										}
-										else
-										{
-											syllabusForm = syllabusForm + "<br>";
-										}
+			if(sectionSyllabus.isTitleValid == false)
+			{
+				syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus title.</p>`;
+			}
+			else
+			{
+				syllabusForm = syllabusForm + "<br>";
+			}
 
-									syllabusForm = syllabusForm + `<input type="text" name="description" id="description${index}" class="description" placeholder="Syllabus Description" value="${sectionSyllabus.description}"><br>`;
+			syllabusForm = syllabusForm + `<input type="text" name="description" id="description${index}" class="description" placeholder="Syllabus Description" value="${sectionSyllabus.description}"><br>`;
 
-									if (sectionSyllabus.isDescriptionValid == false) 
-										{
-											syllabusForm = syllabusForm + `<p>Please enter syllabus description.</p>`;
-										} 
-										else 
-										{
-											syllabusForm = syllabusForm + `<br>`;
-										}
+			if (sectionSyllabus.isDescriptionValid == false) 
+				{
+					syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus description.</p>`;
+				} 
+				else 
+				{
+					syllabusForm = syllabusForm + `<br class="errorMsg">`;
+				}
 
-									syllabusForm = syllabusForm + `<input type="text" name="objective" id="objective${index}" class="objective" placeholder="Learning Objectives" value="${sectionSyllabus.objective}"><br>`;
+			syllabusForm = syllabusForm + `<input type="text" name="objective" id="objective${index}" class="objective" placeholder="Learning Objectives" value="${sectionSyllabus.objective}"><br>`;
 
-									if (sectionSyllabus.isObjectiveValid == false) 
-										{
-											syllabusForm = syllabusForm + `<p>Please enter syllabus objective.</p>`;
-										} 
-										else 
-										{
-											syllabusForm = syllabusForm + `<br>`;
-										}
-									syllabusForm = syllabusForm + `<button id="save" class="btn btn-primary" title="Save" onclick="save(${index})"> Save</button>
-									<button id="cancel" class="btn btn-primary" title="Cancel" onclick="cancel(${index})">Cancel</button>
-									<br><br>
-								</div>`;
+			if (sectionSyllabus.isObjectiveValid == false) 
+				{
+					syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus objective.</p>`;
+				} 
+				else 
+				{
+					syllabusForm = syllabusForm + `<br>`;
+				}
+			syllabusForm = syllabusForm + `<button id="save" class="btn btn-primary" title="Save" onclick="save(${index})"> Save</button>
+			<button id="cancel" class="btn btn-primary" title="Cancel" onclick="cancel(${index})">Cancel</button>
+			<br><br>
+			</div>`;
 			return(syllabusForm);
 		}
 
