@@ -35,24 +35,24 @@
 			syllabusForm = syllabusForm + `<input type="text" name="description" id="description${index}" class="description" placeholder="Syllabus Description" value="${sectionSyllabus.description}"><br>`;
 
 			if (sectionSyllabus.isDescriptionValid == false) 
-				{
-					syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus description.</p>`;
-				} 
-				else 
-				{
-					syllabusForm = syllabusForm + `<br class="errorMsg">`;
-				}
+			{
+				syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus description.</p>`;
+			} 
+			else 
+			{
+				syllabusForm = syllabusForm + "<br>";
+			}
 
 			syllabusForm = syllabusForm + `<input type="text" name="objective" id="objective${index}" class="objective" placeholder="Learning Objectives" value="${sectionSyllabus.objective}"><br>`;
 
 			if (sectionSyllabus.isObjectiveValid == false) 
-				{
-					syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus objective.</p>`;
-				} 
-				else 
-				{
-					syllabusForm = syllabusForm + `<br>`;
-				}
+			{
+				syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus objective.</p>`;
+			} 
+			else 
+			{
+				syllabusForm = syllabusForm + "<br>";
+			}
 			syllabusForm = syllabusForm + `<button id="save" class="btn btn-primary" title="Save" onclick="save(${index})"> Save</button>
 			<button id="cancel" class="btn btn-primary" title="Cancel" onclick="cancel(${index})">Cancel</button>
 			<br><br>
@@ -77,32 +77,37 @@
 
 		function save(index)
 		{
-	    	var sectionSyllabusData = {syllabusTitle: $("#syllabusTitle" + index + "").val(), description: $("#description" + index + "").val(), objective: $("#objective" + index + "").val(), editMode: true, isTitleValid: true, isDescriptionValid: true, isObjectiveValid: true};
-	    	if (sectionSyllabusData.syllabusTitle == "" || sectionSyllabusData.description == "" || sectionSyllabusData.objective == "") 
+			const title = $("#syllabusTitle" + index + "").val();
+			const description = $("#description" + index + "").val();
+			const objective = $("#objective" + index + "").val();
+	    	syllabus[index]["isTitleValid"] = true;
+	    	syllabus[index]["isDescriptionValid"] = true;
+	    	syllabus[index]["isObjectiveValid"] = true;
+	    	if (title == "" || description == "" || objective == "") 
 	    	{
-	    		if (sectionSyllabusData.syllabusTitle == "") 
+	    		syllabus[index]["editMode"] = true;
+	    		if (title == "") 
     			{
-    				sectionSyllabusData.isTitleValid = false;
+    				syllabus[index]["isTitleValid"] = false;
     			}
 
-    			if (sectionSyllabusData.description == "") 
+    			if (description == "") 
     			{
-    				sectionSyllabusData.isDescriptionValid = false;
+    				syllabus[index]["isDescriptionValid"] = false;
     			}
 
-    			if(sectionSyllabusData.objective == "")
+    			if(objective == "")
     			{
-    				sectionSyllabusData.isObjectiveValid = false;
+    				syllabus[index]["isObjectiveValid"] = false;
     			}
 		    }
 		    else
 		    {
-		    	sectionSyllabusData.editMode = false;
+		    	let sectionSyllabusData = {syllabusTitle: title, description: description, objective: objective, editMode: false, isTitleValid: true, isDescriptionValid: true, isObjectiveValid: true};
+		    	syllabus[index] = sectionSyllabusData;
 		    }
-	    	syllabus[index] = sectionSyllabusData;
 	    	renderCards();
 			$("#addSyllabusBtn").prop('disabled', false);
-	    	console.log(syllabus);
 		}
 
 	    function createCard(index, sectionSyllabus)
@@ -146,13 +151,11 @@
 	    		syllabus.splice(index, 1);
 	    		renderCards();
 	    	}
-	    	console.log(syllabus);
 	    }
 
 	    function editSyllabusCard(index)
 	    {
 	    	syllabus[index]["editMode"] = true;
-	    	console.log(syllabus[index]["editMode"]);
 	    	renderCards();
 	    }
 
