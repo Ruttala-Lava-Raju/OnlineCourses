@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add Syllabus</title>
+	<link rel="stylesheet" type="text/css" href="Syllabus.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		var syllabusItems = [];
+		$(document).ready(function(){
+			DisplayUserDetails();
+			DisplaySyllabusItems();
+		})
+
+		function DisplayUserDetails()
+		{
+			$.ajax({
+				type: "GET",
+				url: "DisplayUserDetails.php",
+				datatype: "text",
+				success: function(response)
+				{
+					userInfo = JSON.parse(response);
+					let userDetailsBlock = `<div id="userDetails">
+												<div>	
+													<label>Name: ${userInfo["userName"]}</label>
+													<label id="uname"></label>
+													<br>
+													<label>Id: ${userInfo["userId"]}</label>
+													<label id="uId"></label>
+													<br>
+													<label>E-mail: ${userInfo["userMail"]}</label>
+													<label id="uEmail"></label>
+												<div>
+											</div>
+											<input type="button" name="logout" id="logout" class="logout" value="LOGOUT" title="LOGOUT" onclick="logout()">`;
+				$("#userBlock").html(userDetailsBlock);	
+				},
+				error: function()
+				{
+					window.location.href = "LoginPage.html";
+				}
+			});
+		}
+
+	    function DisplaySyllabusItems()
+	    {
+	    	$.ajax({
+	    		type: "GET",
+	    		url: "DisplaySyllabusItems.php",
+	    		datatype: "text",
+	    		success: function(response){
+					syllabusItems = JSON.parse(response);
+					for (let syllabusItem of syllabusItems)
+					{
+						setValidationValues(syllabusItem);
+					}
+					reRender(syllabusItems);
+				},
+				error: function (jqXHR, exception)
+				{
+					var msg = '';
+					if (jqXHR.status === 0)
+					{
+						msg = 'Not connect.\n Verify Network.';
+					}
+					else if (jqXHR.status == 404)
+					{
+						msg = 'Requested page not found.';
+					}
+					else if(jqXHR.status == 500)
+					{
+						msg = 'Internal server error.';
+					}
+					else
+					{
+					msg = 'Uncaught Error.\n' + jqXHR.responseText;
+					}
+					$("#ajaxStatusMsg").html(msg);
+				},
+	    	});
+		}
+
+		function reRender(syllabusItems)
+	    {
+			$("#syllabus").html("");
+			let index = 0;
+			let counter = 1;
+	    	for(const syllabusItem of syllabusItems)
+			{
+				if (syllabusItem.status == 1)
+				{
+					if (syllabusItem.editMode == false)
+					{
+                        var syllabusContent = createCard(index, syllabusItem, counter);
+                    }
+					else
+					{
+                        var syllabusContent = createForm(index, syllabusItem, counter);
+                    }
+					$("#syllabus").append(syllabusContent);
+					counter++;
+                }
+				index++;
+	    	}
+	    }
+
+		function addSyllabus()
+		{
+            const emptySyllabusForm = {title: "", description: "", objectives: "", status: "1", editMode: true, updateStatus: false, isTitleValid: true, isDescriptionValid: true, isObjectivesValid: true };
+			syllabusItems.push(emptySyllabusForm);
+			reRender(syllabusItems);
+			$("#addSyllabusBtn").prop('disabled', true);
+		}
+
+		function createForm(index, syllabusItem, counter)
+		{
+			let syllabusForm =  `<div class="syllabusItem">
+									<label class="p-3 bg-primary text-white">Syllabus ${counter}</label><br>
+									<input type="text" name="syllabusTitle" id="syllabusTitle${index}" class="syllabusTitle" placeholder="syllabusTitle" value="${syllabusItem.title}"><br>`;
+			if(syllabusItem.isTitleValid == false)
+			{
+				syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus title.</p>`;
+			}
+			else
+			{
+				syllabusForm = syllabusForm + "<br>";
+			}
+
+			syllabusForm = syllabusForm + `<input type="text" name="description" id="description${index}" class="description" placeholder="Syllabus Description" value="${syllabusItem.description}"><br>`;
+
+			if (syllabusItem.isDescriptionValid == false) 
+			{
+				syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus description.</p>`;
+			} 
+			else 
+			{
+				syllabusForm = syllabusForm + "<br>";
+			}
+
+			syllabusForm = syllabusForm + `<input type="text" name="objective" id="objective${index}" class="objective" placeholder="Learning Objectives" value="${syllabusItem.objectives}"><br>`;
+
+			if (syllabusItem.isObjectivesValid == false) 
+			{
+				syllabusForm = syllabusForm + `<p class="errorMsg">Please enter syllabus objective.</p>`;
+			} 
+			else 
+			{
+				syllabusForm = syllabusForm + "<br>";
+			}
+			syllabusForm = syllabusForm + `<button id="save" class="btn btn-primary" title="Save" onclick="save(${index}, ${syllabusItem.updateStatus})"> Save</button>
+			<button id="cancel" class="btn btn-primary" title="Cancel" onclick="cancel(${index})">Cancel</button>
+			<br><br>
+			</div>`;
+			return(syllabusForm);
+		}
+
+	    function createCard(index, syllabusItem, counter)
+	    {
+			let syllabusCard = `<div class="card">
+		    					<div class="index rounded-circle">${counter}</div>
+			    					<div class="minimizedcard">
+			    						<label><b>${syllabusItem["title"]}</b></label><br>
+			    						<label>${ syllabusItem["description"]}</label>
+			    						<a href="#" id="delete" onclick="deleteSyllabus(${index})">Delete</a>
+			    						<a href="#" id="edit${index}" onclick="editSyllabus(${index})">Edit</a>
+			    					</div>
+			    				</div>`;
+		    return(syllabusCard);
+	    }
+
+		function save(index, updateStatus)
+		{
+			let title = $("#syllabusTitle" + index + "").val();
+			let description = $("#description" + index + "").val();
+			let objective = $("#objective" + index + "").val();
+			let obj = syllabusItems[index];
+			setValidationValues(obj);
+			obj.editMode = true;
+			if (title == "" || description == "" || objective == "") {
+				if (title == "") {
+					obj.isTitleValid = false;
+				}
+				if (description == "") {
+					obj.isDescriptionValid = false;
+				}
+				if (objective == "") {
+					obj.isObjectivesValid = false;
+				}
+                reRender(syllabusItems);
+			}
+			else
+			{
+				if (updateStatus != true) 
+					{
+						let syllabusData = {title: title, description: description, objective: objective };
+		                $.ajax({
+		                    method: "POST",
+							url: "SaveSyllabus.php",
+							datatype: "JSON",
+							contentType: "application/JSON",
+							data: JSON.stringify(syllabusData),
+		                    success: function (data, textStatus, xhr)
+							{
+								let syllabusItem = data;
+								setValidationValues(syllabusItem);
+								syllabusItems[index] = syllabusItem
+								reRender(syllabusItems);
+	                            $("#ajaxStatusMsg").html("New syllabus added successfully.");
+							},
+		                    error: function (jqXHR, exception) {
+		                        var msg = '';
+		                        if (jqXHR.status === 0) {
+		                            msg = 'Not connect.\n Verify Network.';
+		                        }
+		                        else if (jqXHR.status == 404) {
+		                            msg = 'Requested page not found.';
+		                        }
+		                        else if (jsXHR.status == 500) 
+		                        {
+		                        	msg = 'Internal server error.';
+		                        }
+		                        else {
+		                            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+		                        }
+		                        $("#ajaxStatusMsg").html(msg);
+		                    }
+		                });
+					}
+
+				 else 
+				 {
+				 	let syllabusId = syllabusItems[index]["syllabusID"];
+				 	let syllabusData = {syllabusId: syllabusId, title: title, description: description, objective: objective };
+	                $.ajax({
+	                    method: "POST",
+						url: "Update.php",
+						datatype: "JSON",
+						contentType: "application/JSON",
+						data: JSON.stringify(syllabusData),
+	                    success: function (data, textStatus, xhr)
+						{
+							let syllabusItem = data;
+							setValidationValues(syllabusItem);
+							syllabusItems[index] = syllabusItem
+							reRender(syllabusItems);
+                            $("#ajaxStatusMsg").html("Syllabus updated successfully.");
+						},
+	                    error: function (jqXHR, exception) {
+	                        var msg = '';
+	                        if (jqXHR.status === 0) {
+	                            msg = 'Not connect.\n Verify Network.';
+	                        }
+	                        else if (jqXHR.status == 404) {
+	                            msg = 'Requested page not found.';
+	                        }
+	                        else if (jqXHR.status == 500) 
+	                        {
+	                        	msg = 'Internal server error.';
+	                        }
+	                        else {
+	                            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+	                        }
+	                        $("#ajaxStatusMsg").html(msg);
+	                    }
+	                });
+				 }
+			}
+				
+			$("#addSyllabusBtn").prop('disabled', false);
+	    }
+
+	    function cancel(index)
+		{
+			let syllabusItem = syllabusItems[index];
+			if((syllabusItem.title == "") && (syllabusItem.description == "") && (syllabusItem.objectives == ""))
+			{
+				syllabusItems.splice(index, 1);
+			}
+			else
+			{
+				syllabusItem.editMode = false;
+			}
+			reRender(syllabusItems);
+			$("#addSyllabusBtn").prop('disabled', false);
+		}
+
+		function editSyllabus(index) 
+		{
+			let syllabusItem = syllabusItems[index];
+			syllabusItem.editMode = true;
+			syllabusItem.updateStatus = true;
+			reRender(syllabusItems);
+		}
+
+		function deleteSyllabus(index)
+		{
+			const ok = confirm("Are you sure?");
+			if(ok)
+			{
+				const syllabusItem = syllabusItems[index];
+				const syllabusNumber = syllabusItem.syllabusID;
+				const obj = {syllabusNumber: syllabusNumber};
+				$.ajax({
+					method: "DELETE",
+					url: "DeleteSyllabus.php",
+					dataType: "json",
+					contentType: "application/JSON",
+					data: JSON.stringify(obj),
+					success: function(data, textStatus, xhr)
+					{
+						syllabusItem["status"] = 0;
+						reRender(syllabusItems);
+                        $("#ajaxStatusMsg").html("Deleted Successfully");
+					},
+                    error: function (jqXHR, exception) {
+                        var msg = '';
+                        if (jqXHR.status === 0) {
+                            msg = 'Not connect.\n Verify Network.';
+                        }
+                        else if (jqXHR.status == 404) {
+                            msg = 'Entered syllabus Id not found.';
+                        }
+                        else if(jqXHR.status == 500)
+                        {
+                        	msg = 'Internal server error.';
+                        }
+                        else {
+                            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                        }
+                        $("#ajaxStatusMsg").html(msg);
+                    },
+				});
+			}
+		}
+
+		function setValidationValues(syllabusItem)
+		{
+			syllabusItem["editMode"] = false;
+			syllabusItem["isTitleValid"] = true;
+			syllabusItem["isDescriptionValid"] = true;
+			syllabusItem["isObjectivesValid"] = true;
+			syllabusItem["updateStatus"] = false;
+        }
+        function logout()
+        {
+        	let ok = confirm("Do you want to logout?");
+        	if(ok)
+        	{
+        		$.ajax({
+        			type: "GET",
+        			url: "Logout.php",
+        			success: function(data)
+        			{
+        				window.location.href="LoginPage.html";
+        			},
+        			error: function(hqxhr, exception)
+        			{
+        				if (hqxhr.status == 404) 
+        				{
+        					$("#ajaxStatusMsg").html("Requested Page Not Found.");
+        				}
+        				else if (hqxhr.status == 500) 
+        				{
+        					$("#ajaxStatusMsg").html("Internal Server Error");
+        				}
+        			}
+        		});
+        	}
+        }
+	</script>
+</head>
+<body id="body">
+	<input type="button" name="addSyllabusBtn" id="addSyllabusBtn" title="Add Syllabus" value="Add Syllabus" onclick="addSyllabus()" class="btn btn-primary">
+	<div id="userBlock"></div>
+	<br>
+	<p id="ajaxStatusMsg"></p>
+	<div id="syllabus"></div>
+	<div id="records" onload="showRecords()"></div>
+</body>
+</html>
